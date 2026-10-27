@@ -186,7 +186,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
     
     Hierarchical ranking:
     1. Same speaker first (prioritized over different speakers)
-    2. Same group second (within same speaker priority)
+    2. REMOVED  -- Same group second (within same speaker priority)
     3. For same speaker: rank by time proximity (ascending)
     4. For different speaker: rank by similarity score (descending)
     
@@ -224,7 +224,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
         same_speaker_priority = 0 if match_speaker == source_speaker else 1
         
         # Priority 2: Same group (0 if same, 1 if different)
-        same_group_priority = 0 if match_group == source_group else 1
+        # same_group_priority = 0 if match_group == source_group else 1
         
         # Priority 3: Context-dependent metric
         if match_speaker == source_speaker:
@@ -235,7 +235,8 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
             # Use negative similarity so higher similarity scores come first when sorting ascending
             tertiary_metric = -similarity
         
-        return (same_speaker_priority, same_group_priority, tertiary_metric)
+        # return (same_speaker_priority, same_group_priority, tertiary_metric)
+        return (same_speaker_priority, tertiary_metric)
     
     # Sort by the composite key
     ranked_matches = sorted(matches, key=sort_key)
