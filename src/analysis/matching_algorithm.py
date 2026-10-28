@@ -185,7 +185,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
     - Different speaker: similarity score (higher = more relevant)
     
     Hierarchical ranking:
-    1. Same speaker first (prioritized over different speakers)
+    1. REMOVED -- Same speaker first (prioritized over different speakers)
     2. REMOVED  -- Same group second (within same speaker priority)
     3. For same speaker: rank by time proximity (ascending)
     4. For different speaker: rank by similarity score (descending)
@@ -202,7 +202,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
     source_speaker = source_sentence.get('participant_id', '')
     source_time = source_sentence.get('start_time', 0.0)
     
-    def sort_key(match: Dict) -> Tuple[int, int, float]:
+    def sort_key(match: Dict) -> Tuple[float]:
         """
         Create composite sort key for match ranking.
         
@@ -221,7 +221,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
         similarity = match.get('similarity', 0.0)
         
         # Priority 1: Same speaker (0 if same, 1 if different)
-        same_speaker_priority = 0 if match_speaker == source_speaker else 1
+        # same_speaker_priority = 0 if match_speaker == source_speaker else 1
         
         # Priority 2: Same group (0 if same, 1 if different)
         # same_group_priority = 0 if match_group == source_group else 1
@@ -236,7 +236,7 @@ def rank_matches_by_context( matches: List[Dict], source_sentence: Dict ) -> Lis
             tertiary_metric = -similarity
         
         # return (same_speaker_priority, same_group_priority, tertiary_metric)
-        return (same_speaker_priority, tertiary_metric)
+        return (tertiary_metric)
     
     # Sort by the composite key
     ranked_matches = sorted(matches, key=sort_key)
