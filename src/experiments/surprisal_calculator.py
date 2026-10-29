@@ -7,7 +7,7 @@ Supports two types of models:
 
 '''
 
-from transformers import AutoTokenizer, AutoModelForMaskedLM, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForMaskedLM, AutoModelForCausalLM, BitsAndBytesConfig
 import torch
 import numpy as np
 import math
@@ -398,8 +398,13 @@ class AutoregressiveLMSurprisalCalculator:
         logger.info(f"Using {device}")
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
-        self.model.to(self.device)
+        bnb_config = BitsAndBytesConfig(load_in_8bit=True)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            trust_remote_code=True,
+            quantization_config=bnb_config,
+            device_map="auto",
+        )
 
         self.model.eval()
 
